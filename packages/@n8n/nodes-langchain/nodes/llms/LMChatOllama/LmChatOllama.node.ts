@@ -1,7 +1,9 @@
 import type { ChatOllamaInput } from '@langchain/ollama';
 import { ChatOllama } from '@langchain/ollama';
 import {
+	Category,
 	NodeConnectionTypes,
+	Subcategory,
 	type INodeType,
 	type INodeTypeDescription,
 	type ISupplyDataFunctions,
@@ -27,10 +29,10 @@ export class LmChatOllama implements INodeType {
 			name: 'Ollama Chat Model',
 		},
 		codex: {
-			categories: ['AI'],
+			categories: [Category.AI],
 			subcategories: {
-				AI: ['Language Models', 'Root Nodes'],
-				'Language Models': ['Chat Models (Recommended)'],
+				AI: [Subcategory.LanguageModels, Subcategory.RootNodes],
+				'Language Models': [Subcategory.ChatModels],
 			},
 			resources: {
 				primaryDocumentation: [

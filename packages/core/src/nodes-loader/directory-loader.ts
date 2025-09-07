@@ -345,7 +345,7 @@ export abstract class DirectoryLoader {
 
 			if (isCustom) {
 				codex.categories = codex.categories
-					? codex.categories.concat(CUSTOM_NODES_CATEGORY)
+					? (codex.categories as string[]).concat(CUSTOM_NODES_CATEGORY)
 					: [CUSTOM_NODES_CATEGORY];
 			}
 
@@ -355,7 +355,7 @@ export abstract class DirectoryLoader {
 
 			if (isCustom) {
 				node.description.codex = {
-					categories: [CUSTOM_NODES_CATEGORY],
+					categories: [CUSTOM_NODES_CATEGORY] as string[],
 				};
 			}
 		}

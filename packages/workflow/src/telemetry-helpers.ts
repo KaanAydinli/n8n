@@ -621,19 +621,34 @@ export function resolveAIMetrics(nodes: INode[], nodeTypes: INodeTypes): FromAIC
 		.map((x) => [x, nodeTypes.getByNameAndVersion(x.type, x.typeVersion)] as const)
 		.filter((x) => !!x[1]?.description);
 
-	const aiNodeCount = resolvedNodes.reduce(
-		(acc, x) => acc + Number(x[1].description.codex?.categories?.includes('AI')),
-		0,
-	);
+	const aiNodeCount = resolvedNodes.reduce((acc, x) => {
+		const categories = x[1].description.codex?.categories;
+		// Handle both string array and enum cases
+		const hasAI = Array.isArray(categories) ? categories.includes('AI' as any) : false;
+		return acc + Number(hasAI);
+	}, 0);
 
 	if (aiNodeCount === 0) return {};
 
 	let fromAIOverrideCount = 0;
 	let fromAIExpressionCount = 0;
 
-	const tools = resolvedNodes.filter((node) =>
-		node[1].description.codex?.subcategories?.AI?.includes('Tools'),
-	);
+	const tools = resolvedNodes.filter(([_, nodeType]) => {
+		const categories = nodeType.description.codex?.categories;
+		const subcategories = nodeType.description.codex?.subcategories;
+
+		// Handle both string array and Category enum cases
+		const isAICategory = Array.isArray(categories) ? categories.includes('AI' as any) : false;
+
+		// Handle subcategories - check if AI subcategories include 'Tools'
+		const hasToolsSubcategory = subcategories?.AI
+			? Array.isArray(subcategories.AI)
+				? subcategories.AI.includes('Tools' as any)
+				: false
+			: false;
+
+		return isAICategory && hasToolsSubcategory;
+	});
 
 	for (const [node, _] of tools) {
 		// FlatMap to support values in resourceLocators
@@ -682,8 +697,8 @@ export function resolveVectorStoreMetrics(
 
 	const vectorStores = resolvedNodes.filter(
 		(x) =>
-			x[1].description.codex?.categories?.includes('AI') &&
-			x[1].description.codex?.subcategories?.AI?.includes('Vector Stores'),
+			x[1].description.codex?.categories?.includes('AI' as any) &&
+			x[1].description.codex?.subcategories?.AI?.includes('Vector Stores' as any),
 	);
 
 	if (vectorStores.length === 0) return {};

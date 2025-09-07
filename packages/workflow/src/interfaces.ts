@@ -2671,9 +2671,22 @@ export type DocumentationLink = {
 	url: string;
 };
 
+export enum Category {
+	AI = 'AI',
+	Analytics = 'Analytics',
+	Communication = 'Communication',
+	Databases = 'Databases',
+	Development = 'Development',
+}
+export enum Subcategory {
+	LanguageModels = 'Language Models',
+	Embeddings = 'Embeddings',
+	ChatModels = 'Chat Models',
+	RootNodes = 'Root Nodes',
+}
 export type CodexData = {
-	categories?: string[];
-	subcategories?: { [category: string]: string[] };
+	categories?: Category[] | string[];
+	subcategories?: { [categoryName: string]: Subcategory[] | string[] };
 	resources?: {
 		credentialDocumentation?: DocumentationLink[];
 		primaryDocumentation?: DocumentationLink[];
